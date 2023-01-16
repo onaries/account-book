@@ -6,13 +6,14 @@ import com.example.accountbook.model.Statement;
 import com.example.accountbook.repository.StatementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.PostPersist;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,6 +21,8 @@ import java.time.format.DateTimeFormatter;
 @Component
 @RequiredArgsConstructor
 public class StatementListener {
+
+    private final Logger logger = LoggerFactory.getLogger(StatementListener.class);
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -45,7 +48,7 @@ public class StatementListener {
         String dateString = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(date);
 
         if (category.getType() == Category.TYPE_INCOME) {
-            log.info("msg: " + String.format("💵수입\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount, accountCardName, dateString));
+            logger.info("msg: " + String.format("💵수입\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount, accountCardName, dateString));
 
 //            notificationManager.sendNotification(String.format("💵수입\n%s%s\n%d원\n%s %s", name, categoryName, amount, paymentMethod.getName(), dateString));
         } else if (category.getType() == Category.TYPE_EXPENSE) {
@@ -60,17 +63,17 @@ public class StatementListener {
 //                log.info("msg: " + String.format("💸지출\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount , paymentMethod.getName(), dateString));
 //            }
 
-            log.info("msg: " + String.format("💳지출\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount, accountCardName, dateString));
+            logger.info("msg: " + String.format("💳지출\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount, accountCardName, dateString));
 
 //            notificationManager.sendNotification(String.format("💳지출\n%s%s\n%d원\n%s %s", name, categoryName, amount, accountCardName, dateString));
         } else if (category.getType() == Category.TYPE_SAVE) {
 
-            log.info("msg: " + String.format("💰저축\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount, accountCardName, dateString));
+            logger.info("msg: " + String.format("💰저축\n[%s] %s\n%s원\n%s\n%s", mainCategoryName, name, formattedAmount, accountCardName, dateString));
 
 //            notificationManager.sendNotification(String.format("💰저축\n%s%s\n%d원\n%s %s", name, categoryName, amount, paymentMethod.getName(), dateString));
         }
 
-        log.info("StatementListener: " + statement);
+        logger.info("StatementListener: " + statement);
 
 
     }

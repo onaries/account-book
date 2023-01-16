@@ -3,6 +3,8 @@ package com.example.accountbook.service;
 import com.example.accountbook.model.TelegramMessage;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class TelegramService {
+
+    private final Logger logger = LoggerFactory.getLogger(TelegramService.class);
 
     @Value("${telegram.bot.token}")
     private String botToken;
@@ -28,7 +32,7 @@ public class TelegramService {
             TelegramMessage telegramMessage = new TelegramMessage(channelChatId, message);
             String params = new Gson().toJson(telegramMessage);
 
-            log.info("params: " + params);
+            logger.info("params: " + params);
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -37,7 +41,7 @@ public class TelegramService {
             HttpEntity<String> entity = new HttpEntity<>(params, headers);
             restTemplate.postForObject(url, entity, String.class);
         } catch (Exception e) {
-            log.error("Error while sending telegram message", e);
+            logger.error("Error while sending telegram message", e);
         }
     }
 

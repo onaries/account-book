@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,8 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class NotionService {
 
+    private final Logger logger = LoggerFactory.getLogger(NotionService.class);
+
     @Value("${notion.token}")
     private String NOTION_TOKEN;
 
@@ -28,8 +32,8 @@ public class NotionService {
     private static final String CREATE_PAGE_URL = "https://api.notion.com/v1/pages";
 
     public void sendPostRequest(Statement statement) {
-        log.info("notion token: " + NOTION_TOKEN);
-        log.info("notion database id: " + DATABASE_ID);
+        logger.info("notion token: " + NOTION_TOKEN);
+        logger.info("notion database id: " + DATABASE_ID);
 
         String categoryName = statement.getCategory().getName();
         String accountCardName = statement.getAccountCard().getName();
@@ -96,7 +100,7 @@ public class NotionService {
         jsonObject.add("properties", properties);
 
         String params = new Gson().toJson(jsonObject);
-        log.info(params);
+        logger.info(params);
 
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -108,7 +112,7 @@ public class NotionService {
             HttpEntity<String> entity = new HttpEntity<>(params, headers);
             restTemplate.postForObject(CREATE_PAGE_URL, entity, String.class);
         } catch (Exception e) {
-            log.error("Error while sending notion message", e);
+            logger.error("Error while sending notion message", e);
         }
     }
 }
