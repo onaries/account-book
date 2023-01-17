@@ -9,5 +9,6 @@ data class StatementDto(
     var amount: Int = 0,
     var discount: Int = 0,
     var accountCard: Long = 0,
-    var date: LocalDateTime = LocalDateTime.now()
+    var date: LocalDateTime = LocalDateTime.now(),
+    var isAlert: Boolean = false,
 )

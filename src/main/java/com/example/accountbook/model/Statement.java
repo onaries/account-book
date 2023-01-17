@@ -1,6 +1,5 @@
 package com.example.accountbook.model;
 
-import com.example.accountbook.listener.StatementListener;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
         @Index(name = "idx_statement_account_card", columnList = "account_card_id"),
         @Index(name = "idx_statement_date", columnList = "date"),
 })
-@EntityListeners({StatementListener.class, AuditingEntityListener.class})
+@EntityListeners({AuditingEntityListener.class})
 public class Statement {
 
     @Id
@@ -38,6 +37,9 @@ public class Statement {
 
     @ManyToOne(optional = false)
     private AccountCard accountCard;
+
+    @ColumnDefault("false")
+    private boolean isAlert;
 
     @NotNull
     private LocalDateTime date;
@@ -106,5 +108,13 @@ public class Statement {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public boolean isAlert() {
+        return isAlert;
+    }
+
+    public void setAlert(boolean alert) {
+        isAlert = alert;
     }
 }
