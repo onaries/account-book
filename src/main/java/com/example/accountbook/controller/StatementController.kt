@@ -58,7 +58,32 @@ class StatementController(private val statementService: StatementService) {
         } else if (mode == 2) {
             val localDateTime = LocalDateTime.parse(date)
             return statementService.sumStatementMonthly(id, localDateTime)[0]
+        } else if (mode == 3) {
+            val localDateTime = LocalDateTime.parse(date)
+            val typeArray = intArrayOf(1, 2, 3)
+            var total = 0
+            for (i in typeArray) {
+                if (i == 1) {
+                    total += statementService.sumTotalAmountMonthly(i, localDateTime)[0]
+                } else {
+                    total -= statementService.sumTotalAmountMonthly(i, localDateTime)[0]
+                }
+            }
+            return total
+
         }
         return 0
+    }
+
+    @GetMapping("/api/statement/category-total")
+    fun totalStatementByCategory(@RequestParam date: String): List<Int> {
+        val localDateTime = LocalDateTime.parse(date)
+        val typeArray = intArrayOf(1, 2, 3)
+        val totalList = mutableListOf<Int>()
+        for (i in typeArray) {
+            totalList.add(statementService.sumTotalAmountMonthly(i, localDateTime)[0])
+        }
+
+        return totalList
     }
 }

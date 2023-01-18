@@ -89,4 +89,8 @@ class StatementService(
     fun sumStatementMonthly(id: Long, date: LocalDateTime): List<Int> {
         return statementRepository.sumAmountMonthly(id, date)
     }
+
+    fun sumTotalAmountMonthly(id: Int, date: LocalDateTime): List<Int> {
+        return statementRepository.sumTotalAmountMonthly(id, date)
+    }
 }

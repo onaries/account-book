@@ -8,4 +8,6 @@ public interface StatementCustomRepository {
     List<Integer> sumAmountWeekly(Long mainCategoryId, LocalDateTime date);
 
     List<Integer> sumAmountMonthly(Long mainCategoryId, LocalDateTime data);
+
+    List<Integer> sumTotalAmountMonthly(int categoryType, LocalDateTime date);
 }
