@@ -37,30 +37,21 @@ class StatementService(
         val pageRequest: PageRequest =
             PageRequest.of(pageable.pageNumber - 1, pageable.pageSize, Sort.Direction.valueOf(order), sort)
 
-        if (type == null) {
-            if (dateLte == null || dateGte == null) {
-                return statementRepository.findAll(pageRequest)
-            } else {
-                return statementRepository.findByDate(
-                    pageRequest,
-                    LocalDateTime.parse(dateGte + "T00:00"),
-                    LocalDateTime.parse(dateLte + "T23:59")
-                )
-            }
-        } else {
-            if (dateLte == null || dateGte == null) {
-                return statementRepository.findByCategoryId(pageRequest, type)
-            } else {
-                return statementRepository.findByCategoryIdAndDateBetween(
-                    pageRequest,
-                    type,
-                    LocalDateTime.parse(dateGte + "T00:00"),
-                    LocalDateTime.parse(dateLte + "T23:59")
-                )
-            }
-
-
+        var dateGteStr: LocalDateTime? = null
+        if (dateGte != null) {
+            dateGteStr = LocalDateTime.parse(dateGte + "T00:00")
         }
+        var dateLteStr: LocalDateTime? = null
+        if (dateLte != null) {
+            dateLteStr = LocalDateTime.parse(dateLte + "T23:59")
+        }
+
+        return statementRepository.findByCategoryIdAndDateBetween(
+            pageRequest,
+            type,
+            dateGteStr,
+            dateLteStr,
+        )
     }
 
     fun getStatementById(id: Long): Optional<Statement> {
