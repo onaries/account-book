@@ -1,5 +1,6 @@
 package com.example.accountbook.controller
 
+import com.example.accountbook.config.NotificationManager
 import com.example.accountbook.entity.StatementDto
 import com.example.accountbook.model.Statement
 import com.example.accountbook.service.StatementService
@@ -12,7 +13,10 @@ import java.time.LocalDateTime
 import java.util.*
 
 @RestController
-class StatementController(private val statementService: StatementService) {
+class StatementController(
+    private val statementService: StatementService,
+    private val notificationManager: NotificationManager
+) {
 
     private val logger = LoggerFactory.getLogger(StatementController::class.java)
 
@@ -85,5 +89,12 @@ class StatementController(private val statementService: StatementService) {
         }
 
         return totalList
+    }
+
+    @PostMapping("/api/statement/{id}/alert")
+    fun alertStatement(@PathVariable id: Long): String {
+        val message = statementService.convertStatementMessage(id)
+        notificationManager.sendNotification(message)
+        return message
     }
 }

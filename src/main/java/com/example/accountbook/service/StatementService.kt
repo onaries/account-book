@@ -6,6 +6,7 @@ import com.example.accountbook.model.Statement
 import com.example.accountbook.repository.AccountCardRepository
 import com.example.accountbook.repository.CategoryRepository
 import com.example.accountbook.repository.StatementRepository
+import com.example.accountbook.utils.StatementConvertUtils
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -22,6 +23,7 @@ class StatementService(
     private val categoryRepository: CategoryRepository,
     private val accountCardRepository: AccountCardRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
+    private val statementConvertUtils: StatementConvertUtils,
 ) {
 
     fun getStatementList(pageable: Pageable, order: String, sort: String, type: Int?): Page<Statement> {
@@ -92,5 +94,10 @@ class StatementService(
 
     fun sumTotalAmountMonthly(id: Int, date: LocalDateTime): List<Int> {
         return statementRepository.sumTotalAmountMonthly(id, date)
+    }
+
+    fun convertStatementMessage(id: Long): String {
+        val statement = statementRepository.findById(id).get()
+        return statementConvertUtils.convertMessage(statement)
     }
 }
