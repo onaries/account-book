@@ -26,14 +26,40 @@ class StatementService(
     private val statementConvertUtils: StatementConvertUtils,
 ) {
 
-    fun getStatementList(pageable: Pageable, order: String, sort: String, type: Int?): Page<Statement> {
+    fun getStatementList(
+        pageable: Pageable,
+        order: String,
+        sort: String,
+        type: Int?,
+        dateGte: String?,
+        dateLte: String?
+    ): Page<Statement> {
         val pageRequest: PageRequest =
             PageRequest.of(pageable.pageNumber - 1, pageable.pageSize, Sort.Direction.valueOf(order), sort)
 
         if (type == null) {
-            return statementRepository.findAll(pageRequest)
+            if (dateLte == null || dateGte == null) {
+                return statementRepository.findAll(pageRequest)
+            } else {
+                return statementRepository.findByDate(
+                    pageRequest,
+                    LocalDateTime.parse(dateGte + "T00:00"),
+                    LocalDateTime.parse(dateLte + "T23:59")
+                )
+            }
         } else {
-            return statementRepository.findByCategoryId(pageRequest, type)
+            if (dateLte == null || dateGte == null) {
+                return statementRepository.findByCategoryId(pageRequest, type)
+            } else {
+                return statementRepository.findByCategoryIdAndDateBetween(
+                    pageRequest,
+                    type,
+                    LocalDateTime.parse(dateGte + "T00:00"),
+                    LocalDateTime.parse(dateLte + "T23:59")
+                )
+            }
+
+
         }
     }
 

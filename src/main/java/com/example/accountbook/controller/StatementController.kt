@@ -26,12 +26,14 @@ class StatementController(
         @RequestParam order: String,
         @RequestParam sort: String,
         @RequestParam type: Int?,
+        @RequestParam(value = "date_gte") dateGte: String?,
+        @RequestParam(value = "date_lte") dateLte: String?,
     ): ResponseEntity<List<Statement>> {
         val hearers = HttpHeaders()
         hearers.add("X-Total-Count", statementService.countStatement().toString())
 
         return ResponseEntity.ok().headers(hearers)
-            .body(statementService.getStatementList(pageable, order, sort, type).toList())
+            .body(statementService.getStatementList(pageable, order, sort, type, dateGte, dateLte).toList())
     }
 
     @GetMapping("/api/statement/{id}")
