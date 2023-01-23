@@ -70,6 +70,8 @@ class StatementService(
         statement.amount = statementDto.amount
         statement.discount = statementDto.discount
         statement.name = statementDto.name
+        statement.isAlert = statementDto.isAlert
+        statement.description = statementDto.description
 
         try {
             statement.category = categoryRepository.findById(statementDto.category).get()
@@ -93,6 +95,8 @@ class StatementService(
         statement.category = categoryRepository.findById(statementDto.category).get()
         statement.accountCard = accountCardRepository.findById(statementDto.accountCard).get()
         statement.name = statementDto.name
+        statement.isAlert = statementDto.isAlert
+        statement.description = statementDto.description
 
         return statement
     }

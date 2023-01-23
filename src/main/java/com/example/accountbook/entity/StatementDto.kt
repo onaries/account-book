@@ -11,4 +11,5 @@ data class StatementDto(
     var accountCard: Long = 0,
     var date: LocalDateTime = LocalDateTime.now(),
     var isAlert: Boolean = false,
+    var description: String? = ""
 )
