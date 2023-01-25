@@ -37,7 +37,7 @@ class AssetController(private val assetService: AssetService) {
     }
 
     @PutMapping("/api/asset/{id}")
-    fun updateAsset(@PathVariable id: Long, @RequestParam assetDto: AssetDto): Asset {
+    fun updateAsset(@PathVariable id: Long, @RequestBody assetDto: AssetDto): Asset {
         return assetService.updateAsset(id, assetDto)
     }
 
