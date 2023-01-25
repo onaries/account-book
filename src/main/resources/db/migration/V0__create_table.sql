@@ -9,19 +9,19 @@ create table if not exists account.account_card
     id         bigint auto_increment
         primary key,
     amount     int default 0 not null,
-    created_at datetime(6)   null,
+    created_at timestamp     null,
     name       varchar(255)  null,
     type       int           not null,
-    updated_at datetime(6)   null
+    updated_at timestamp     null
 );
 
 create table if not exists account.main_category
 (
     id           bigint auto_increment
         primary key,
-    created_at   datetime(6)    null,
+    created_at   timestamp      null,
     name         varchar(255)   null,
-    updated_at   datetime(6)    null,
+    updated_at   timestamp      null,
     weekly_limit int default -1 not null,
     constraint UK_gscoqiursggkh41pca2ct489l
         unique (name)
@@ -44,14 +44,16 @@ create table if not exists account.statement
 (
     id              bigint auto_increment
         primary key,
-    amount          int           not null,
-    created_at      datetime(6)   null,
-    date            datetime(6)   null,
-    discount        int default 0 not null,
-    name            varchar(255)  null,
-    updated_at      datetime(6)   null,
-    account_card_id bigint        not null,
-    category_id     bigint        not null,
+    amount          int                  not null,
+    created_at      timestamp            null,
+    date            timestamp            null,
+    discount        int     default 0    not null,
+    name            varchar(255)         null,
+    updated_at      timestamp            null,
+    account_card_id bigint               not null,
+    category_id     bigint               not null,
+    is_alert        boolean default false,
+    description     text    default null null,
     constraint FKb49ck9t9smm3byugc5nfcrwyj
         foreign key (category_id) references account.category (id),
     constraint FKq5ngb49sb940bb1bdqpor122w
@@ -68,12 +70,12 @@ create table if not exists account.user
 (
     id            bigint auto_increment
         primary key,
-    created_at    datetime(6)  null,
-    last_login_at datetime(6)  null,
+    created_at    timestamp    null,
+    last_login_at timestamp    null,
     name          varchar(30)  not null,
     password      varchar(255) not null,
     role          varchar(255) null,
-    updated_at    datetime(6)  null,
+    updated_at    timestamp    null,
     username      varchar(30)  null,
     constraint UK_sb8bbouer5wak8vyiiy4pf2bx
         unique (username)
