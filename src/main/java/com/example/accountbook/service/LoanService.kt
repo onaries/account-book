@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.transaction.Transactional
 
 
 @Service
@@ -40,6 +41,7 @@ class LoanService(private val loanRepository: LoanRepository) {
         return loanRepository.save(loan)
     }
 
+    @Transactional
     fun updateLoan(id: Long, loanDto: LoanDto): Loan {
         val loan: Loan = loanRepository.findByIdOrNull(id) ?: throw Exception("대출이 존재하지 않습니다.")
         loan.name = loanDto.name

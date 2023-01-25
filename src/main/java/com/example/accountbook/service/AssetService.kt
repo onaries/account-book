@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.transaction.Transactional
 
 
 @Service
@@ -40,6 +41,7 @@ class AssetService(private val assetRepository: AssetRepository) {
         return asset
     }
 
+    @Transactional
     fun updateAsset(id: Long, assetDto: AssetDto): Asset {
         val asset: Asset = assetRepository.findByIdOrNull(id) ?: throw Exception("자산이 존재하지 않습니다.")
         asset.name = assetDto.name
