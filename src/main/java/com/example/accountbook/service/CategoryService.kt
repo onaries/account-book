@@ -13,44 +13,46 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Service
-open class CategoryService(
+class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val mainCategoryRepository: MainCategoryRepository
 ) {
 
-    open fun getCategoryAll(): List<Category> {
-        return categoryRepository.findAll()
+    fun getCategoryAll(): List<Category> {
+        val sort = Sort.by(Sort.Order.asc("mainCategory"), Sort.Order.asc("id"))
+        return categoryRepository.findAll(sort)
     }
 
-    open fun countCategory(): Long {
+    fun countCategory(): Long {
         return categoryRepository.countBy()
     }
 
-    open fun getCategoryList(pageable: Pageable, order: String, sort: String): List<Category> {
+    fun getCategoryList(pageable: Pageable, order: String, sort: String): List<Category> {
         val pageRequest =
             PageRequest.of(pageable.pageNumber - 1, pageable.pageSize, Sort.Direction.valueOf(order), sort)
         return categoryRepository.findAll(pageRequest).toList()
     }
 
-    open fun getCategory(id: Long): Optional<Category> {
+    fun getCategory(id: Long): Optional<Category> {
         return categoryRepository.findById(id)
     }
 
-    open fun getCategoryByName(name: String): Optional<Category> {
+    fun getCategoryByName(name: String): Optional<Category> {
         return categoryRepository.findByName(name)
     }
 
-    open fun createCategory(categoryDto: CategoryDto): Category {
+    fun createCategory(categoryDto: CategoryDto): Category {
         val category: Category = Category()
         category.mainCategory =
             mainCategoryRepository.findById(categoryDto.mainCategory).orElseThrow { Exception("메인 카테고리가 존재하지 않습니다.") }
         category.name = categoryDto.name
+        category.type = categoryDto.type
         categoryRepository.save(category)
         return category
     }
 
     @Transactional
-    open fun updateCategory(id: Long, categoryDto: CategoryDto): Category {
+    fun updateCategory(id: Long, categoryDto: CategoryDto): Category {
         val category = categoryRepository.findByIdOrNull(id) ?: throw Exception("카테고리가 존재하지 않습니다.")
 
         category.mainCategory =
@@ -61,7 +63,7 @@ open class CategoryService(
         return category
     }
 
-    open fun deleteCategory(id: Long) {
+    fun deleteCategory(id: Long) {
         val category = categoryRepository.findByIdOrNull(id) ?: throw Exception("카테고리가 존재하지 않습니다.")
         categoryRepository.delete(category)
     }
