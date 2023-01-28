@@ -28,12 +28,26 @@ class StatementController(
         @RequestParam type: Int?,
         @RequestParam(value = "date_gte") dateGte: String?,
         @RequestParam(value = "date_lte") dateLte: String?,
+        @RequestParam(value = "category_id") categoryId: Long?,
+        @RequestParam(value = "main_category_id") mainCategoryId: Long?,
     ): ResponseEntity<List<Statement>> {
         val hearers = HttpHeaders()
-        hearers.add("X-Total-Count", statementService.countStatement().toString())
+
+        val statementList = statementService.getStatementList(
+            pageable,
+            order,
+            sort,
+            type,
+            dateGte,
+            dateLte,
+            categoryId,
+            mainCategoryId
+        )
+
+        hearers.add("X-Total-Count", statementList.totalElements.toString())
 
         return ResponseEntity.ok().headers(hearers)
-            .body(statementService.getStatementList(pageable, order, sort, type, dateGte, dateLte).toList())
+            .body(statementList.toList())
     }
 
     @GetMapping("/api/statement/{id}")
@@ -90,6 +104,9 @@ class StatementController(
             totalList.add(statementService.sumTotalAmountMonthly(i, localDateTime)[0])
         }
 
+        totalList.add(statementService.sumStatementDiscountMonthly(localDateTime)[0])
+        totalList.add(statementService.sumStatementSavingMonthly(localDateTime)[0])
+
         return totalList
     }
 
@@ -99,4 +116,21 @@ class StatementController(
         notificationManager.sendNotification(message)
         return message
     }
+
+    @GetMapping("/api/statement/group-total")
+    fun totalStatementByGroup(@RequestParam date: String): Map<String, Int> {
+        val localDateTime = LocalDateTime.parse(date)
+        val groupData = statementService.sumStatementGroupByCategoryWeekly(localDateTime)
+        val json = mutableMapOf<String, Int>()
+
+        for (data in groupData) {
+
+            val arr = data.toArray()
+            json[arr[1].toString()] = arr[0] as Int
+        }
+
+        return json
+    }
+
+
 }

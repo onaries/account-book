@@ -15,6 +15,6 @@ public interface StatementRepository extends JpaRepository<Statement, Long>, Sta
 
     Long countBy();
 
-    @Query(value = "SELECT s FROM Statement s WHERE (:type IS NULL OR s.category.id IN (SELECT c.id FROM Category c WHERE c.type = :type)) AND (:startDate IS NULL OR s.date >= :startDate) AND (:endDate IS NULL OR s.date <= :endDate)")
-    Page<Statement> findByCategoryIdAndDateBetween(Pageable pageable, @Param("type") Integer type, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query(value = "SELECT s FROM Statement s WHERE (:type IS NULL OR s.category.id IN (SELECT c.id FROM Category c WHERE c.type = :type)) AND (:startDate IS NULL OR s.date >= :startDate) AND (:endDate IS NULL OR s.date <= :endDate) AND (:categoryId IS NULL OR s.category.id = :categoryId) AND (:mainCategoryId IS NULL OR s.category.mainCategory.id = :mainCategoryId) ")
+    Page<Statement> findByCategoryIdAndDateBetween(Pageable pageable, @Param("type") Integer type, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("categoryId") Long categoryId, @Param("mainCategoryId") Long mainCategoryId);
 }

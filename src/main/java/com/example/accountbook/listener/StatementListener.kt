@@ -10,7 +10,7 @@ import org.springframework.transaction.event.TransactionalEventListener
 
 
 @Component
-open class StatementListener(
+class StatementListener(
     private val notificationManager: NotificationManager,
     private val statementConvertUtils: StatementConvertUtils
 ) {
@@ -18,7 +18,7 @@ open class StatementListener(
     private val logger = LoggerFactory.getLogger(StatementListener::class.java)
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
-    open fun handleStatementPersistEvent(event: StatementPersistEvent) {
+    fun handleStatementPersistEvent(event: StatementPersistEvent) {
         val statement = event.statement
         val message = statementConvertUtils.convertMessage(statement)
 

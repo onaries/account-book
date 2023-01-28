@@ -3,6 +3,7 @@ package com.example.accountbook.repository
 import com.example.accountbook.model.QCategory
 import com.example.accountbook.model.QMainCategory
 import com.example.accountbook.model.QStatement
+import com.querydsl.core.Tuple
 import com.querydsl.core.types.ConstantImpl
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -59,4 +60,31 @@ class StatementRepositoryImpl(private val jpaQueryFactory: JPAQueryFactory) : St
                 QStatement.statement.date.month().eq(date.monthValue)
             ).fetch();
     }
+
+    override fun sumAmountWeeklyGroupByCategory(date: LocalDateTime?): MutableList<Tuple> {
+
+        return jpaQueryFactory.select(QStatement.statement.amount.sum().coalesce(0).`as`("sum"), QCategory.category.id)
+            .from(QStatement.statement)
+            .join(QStatement.statement.category, QCategory.category)
+            .groupBy(QCategory.category.id)
+            .fetch();
+    }
+
+    override fun sumTotalDiscountMonthly(date: LocalDateTime): MutableList<Int> {
+        return jpaQueryFactory.select(QStatement.statement.discount.sum().coalesce(0).`as`("sum"))
+            .from(QStatement.statement)
+            .where(
+                QStatement.statement.date.month().eq(date.monthValue)
+            ).fetch();
+    }
+
+    override fun sumTotalSavingMonthly(date: LocalDateTime): MutableList<Int> {
+        return jpaQueryFactory.select(QStatement.statement.saving.sum().coalesce(0).`as`("sum"))
+            .from(QStatement.statement)
+            .where(
+                QStatement.statement.date.month().eq(date.monthValue)
+            ).fetch();
+    }
 }
+
+

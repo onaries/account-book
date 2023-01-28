@@ -7,6 +7,7 @@ import com.example.accountbook.repository.AccountCardRepository
 import com.example.accountbook.repository.CategoryRepository
 import com.example.accountbook.repository.StatementRepository
 import com.example.accountbook.utils.StatementConvertUtils
+import com.querydsl.core.Tuple
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -32,7 +33,9 @@ class StatementService(
         sort: String,
         type: Int?,
         dateGte: String?,
-        dateLte: String?
+        dateLte: String?,
+        categoryId: Long?,
+        mainCategoryId: Long?,
     ): Page<Statement> {
         val pageRequest: PageRequest =
             PageRequest.of(pageable.pageNumber - 1, pageable.pageSize, Sort.Direction.valueOf(order), sort)
@@ -51,6 +54,8 @@ class StatementService(
             type,
             dateGteStr,
             dateLteStr,
+            categoryId,
+            mainCategoryId,
         )
     }
 
@@ -72,6 +77,7 @@ class StatementService(
         statement.name = statementDto.name
         statement.isAlert = statementDto.isAlert
         statement.description = statementDto.description
+        statement.saving = statementDto.saving
 
         try {
             statement.category = categoryRepository.findById(statementDto.category).get()
@@ -97,6 +103,7 @@ class StatementService(
         statement.name = statementDto.name
         statement.isAlert = statementDto.isAlert
         statement.description = statementDto.description
+        statement.saving = statementDto.saving
 
         return statement
     }
@@ -120,5 +127,17 @@ class StatementService(
     fun convertStatementMessage(id: Long): String {
         val statement = statementRepository.findById(id).get()
         return statementConvertUtils.convertMessage(statement)
+    }
+
+    fun sumStatementGroupByCategoryWeekly(date: LocalDateTime): List<Tuple> {
+        return statementRepository.sumAmountWeeklyGroupByCategory(date)
+    }
+
+    fun sumStatementDiscountMonthly(date: LocalDateTime): List<Int> {
+        return statementRepository.sumTotalDiscountMonthly(date)
+    }
+
+    fun sumStatementSavingMonthly(date: LocalDateTime): List<Int> {
+        return statementRepository.sumTotalSavingMonthly(date)
     }
 }

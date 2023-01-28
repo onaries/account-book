@@ -35,6 +35,9 @@ public class Statement {
     @ColumnDefault("0")
     private int discount;
 
+    @ColumnDefault("0")
+    private int saving;
+
     @ManyToOne(optional = false)
     private AccountCard accountCard;
 
@@ -51,6 +54,7 @@ public class Statement {
     private LocalDateTime updatedAt;
 
     private String description;
+
 
     public Long getId() {
         return id;
@@ -126,5 +130,13 @@ public class Statement {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getSaving() {
+        return saving;
+    }
+
+    public void setSaving(int saving) {
+        this.saving = saving;
     }
 }
