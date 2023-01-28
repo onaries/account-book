@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface AssetRepository : JpaRepository<Asset, Long> {
-    
+interface AssetRepository : JpaRepository<Asset, Long>, AssetCustomRepository {
+
 }

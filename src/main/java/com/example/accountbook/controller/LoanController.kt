@@ -44,4 +44,9 @@ class LoanController(private val loanService: LoanService) {
         return ResponseEntity.status(204).build()
     }
 
+    @GetMapping("/api/loan/total")
+    fun getTotalLoan(): Int {
+        return loanService.getLoanAmount()[0]
+    }
+
 }

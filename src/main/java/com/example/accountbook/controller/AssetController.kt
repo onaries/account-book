@@ -48,5 +48,9 @@ class AssetController(private val assetService: AssetService) {
         return ResponseEntity.status(204).build()
     }
 
+    @GetMapping("/api/asset/total")
+    fun getTotalAsset(): Int {
+        return assetService.getTotalAmount()[0]
+    }
 
 }

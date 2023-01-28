@@ -64,4 +64,8 @@ class LoanService(private val loanRepository: LoanRepository) {
         return loanRepository.count()
     }
 
+    fun getLoanAmount(): List<Int> {
+        return loanRepository.sumTotalLoans();
+    }
+
 }

@@ -78,6 +78,9 @@ dependencies {
     compileOnly 'com.fasterxml.jackson.module:jackson-module-kotlin'
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compileOnly "org.jetbrains.kotlin:kotlin-reflect"
+
+    kapt("com.querydsl:querydsl-apt:$queryDslVersion:jpa")
+
 }
 
 tasks.named('test') {

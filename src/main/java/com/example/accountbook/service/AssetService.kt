@@ -61,4 +61,7 @@ class AssetService(private val assetRepository: AssetRepository) {
         return assetRepository.count()
     }
 
+    fun getTotalAmount(): List<Int> {
+        return assetRepository.sumTotalAssets()
+    }
 }

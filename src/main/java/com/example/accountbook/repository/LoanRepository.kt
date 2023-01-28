@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface LoanRepository : JpaRepository<Loan, Long> {
+interface LoanRepository : JpaRepository<Loan, Long>, LoanCustomRepository {
 }
