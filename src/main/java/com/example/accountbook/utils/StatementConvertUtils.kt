@@ -39,7 +39,7 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
-                    formatter.format(statement.amount),
+                    formatter.format(statement.amount * -1),
                     statement.accountCard.name,
                     dateString,
                     weeklyLeft
@@ -51,7 +51,7 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
-                    formatter.format(statement.amount),
+                    formatter.format(statement.amount * -1),
                     statement.accountCard.name,
                     dateString
                 )
@@ -63,7 +63,7 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
                 statement.category.mainCategory.name,
                 statement.category.name,
                 statement.name,
-                formatter.format(statement.amount),
+                formatter.format(statement.amount * -1),
                 statement.accountCard.name,
                 dateString
             )

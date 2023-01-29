@@ -83,11 +83,7 @@ class StatementController(
             val typeArray = intArrayOf(1, 2, 3)
             var total = 0
             for (i in typeArray) {
-                if (i == 1) {
-                    total += statementService.sumTotalAmountMonthly(i, localDateTime)[0]
-                } else {
-                    total -= statementService.sumTotalAmountMonthly(i, localDateTime)[0]
-                }
+                total += statementService.sumTotalAmountMonthly(i, localDateTime)[0]
             }
             return total
 
@@ -132,5 +128,59 @@ class StatementController(
         return json
     }
 
+    @GetMapping("/api/statement/summary")
+    fun getStatementSummary(
+        pageable: Pageable,
+        @RequestParam order: String,
+        @RequestParam sort: String,
+        @RequestParam type: Int?,
+        @RequestParam(value = "date_gte") dateGte: String?,
+        @RequestParam(value = "date_lte") dateLte: String?,
+        @RequestParam(value = "category_id") categoryId: Long?,
+        @RequestParam(value = "main_category_id") mainCategoryId: Long?
+    ): ResponseEntity<HashMap<String, Int>> {
 
+        val statementList = statementService.getStatementList(
+            pageable,
+            order,
+            sort,
+            type,
+            dateGte,
+            dateLte,
+            categoryId,
+            mainCategoryId
+        )
+
+        val pageList = statementList.toList()
+        var pageAmount = 0
+        var pageDiscount = 0
+        var pageSaving = 0
+        for (statement in pageList) {
+            pageAmount += statement.amount
+            pageDiscount += statement.discount
+            pageSaving += statement.saving
+        }
+
+        val summary = statementService.getStatementSummary(
+            pageable,
+            order,
+            sort,
+            type,
+            dateGte,
+            dateLte,
+            categoryId,
+            mainCategoryId
+        )
+
+        val map = HashMap<String, Int>();
+
+        map["pageAmount"] = pageAmount
+        map["pageDiscount"] = pageDiscount
+        map["pageSaving"] = pageSaving
+        map["totalAmount"] = summary["amount"] as Int
+        map["totalDiscount"] = summary["discount"] as Int
+        map["totalSaving"] = summary["saving"] as Int
+
+        return ResponseEntity.ok().body(map)
+    }
 }

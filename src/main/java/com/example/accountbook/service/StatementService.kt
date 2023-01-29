@@ -59,6 +59,43 @@ class StatementService(
         )
     }
 
+    fun getStatementSummary(
+        pageable: Pageable,
+        order: String,
+        sort: String,
+        type: Int?,
+        dateGte: String?,
+        dateLte: String?,
+        categoryId: Long?,
+        mainCategoryId: Long?
+    ): HashMap<String, Int> {
+
+        var dateGteStr: LocalDateTime? = null
+        if (dateGte != null) {
+            dateGteStr = LocalDateTime.parse(dateGte + "T00:00")
+        }
+        var dateLteStr: LocalDateTime? = null
+        if (dateLte != null) {
+            dateLteStr = LocalDateTime.parse(dateLte + "T23:59")
+        }
+
+        val map = HashMap<String, Int>()
+        statementRepository.sumStatementSummary(
+            type,
+            dateGteStr,
+            dateLteStr,
+            categoryId,
+            mainCategoryId,
+        ).forEach { tuple: Tuple ->
+
+            map["amount"] = tuple.toArray()[0] as Int
+            map["discount"] = tuple.toArray()[1] as Int
+            map["saving"] = tuple.toArray()[2] as Int
+
+        }
+        return map
+    }
+
     fun getStatementById(id: Long): Optional<Statement> {
         return statementRepository.findById(id)
     }
@@ -69,8 +106,9 @@ class StatementService(
 
     @Transactional
     fun createStatement(statementDto: StatementDto): Statement {
-        val statement = Statement()
 
+        val constructor = Statement::class.java.getConstructor()
+        val statement = constructor.newInstance()
         statement.date = statementDto.date
         statement.amount = statementDto.amount
         statement.discount = statementDto.discount
