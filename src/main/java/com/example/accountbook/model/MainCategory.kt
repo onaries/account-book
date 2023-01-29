@@ -1,62 +1,29 @@
-package com.example.accountbook.model;
+package com.example.accountbook.model
 
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import org.hibernate.annotations.ColumnDefault
+import org.hibernate.annotations.DynamicInsert
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
+import javax.persistence.*
+import javax.validation.constraints.NotNull
 
 @Entity
 @DynamicInsert
-@EntityListeners(AuditingEntityListener.class)
-public class MainCategory {
-
+@EntityListeners(AuditingEntityListener::class)
+data class MainCategory(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    val id: Long,
     @Column(unique = true)
-    private String name;
-
+    var name: String,
     @CreatedDate
-    private LocalDateTime createdAt;
+    var createdAt: LocalDateTime,
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    var updatedAt: LocalDateTime,
 
-    @NotNull
     @ColumnDefault("-1")
-    private int weeklyLimit;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public int getWeeklyLimit() {
-        return weeklyLimit;
-    }
-
-    public void setWeeklyLimit(int weeklyLimit) {
-        this.weeklyLimit = weeklyLimit;
-    }
-}
+    var weeklyLimit: @NotNull Int = -1,
+)

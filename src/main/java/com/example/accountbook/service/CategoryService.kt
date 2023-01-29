@@ -42,7 +42,9 @@ class CategoryService(
     }
 
     fun createCategory(categoryDto: CategoryDto): Category {
-        val category: Category = Category()
+
+        val constructor = Category::class.java.getConstructor()
+        val category = constructor.newInstance() as Category
         category.mainCategory =
             mainCategoryRepository.findById(categoryDto.mainCategory).orElseThrow { Exception("메인 카테고리가 존재하지 않습니다.") }
         category.name = categoryDto.name
