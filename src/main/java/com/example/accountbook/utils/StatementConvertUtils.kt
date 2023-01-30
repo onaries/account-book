@@ -33,16 +33,16 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
             if (statement.category.mainCategory.weeklyLimit > 0) {
                 val weeklyAmount =
                     statementRepository.sumAmountWeekly(statement.category.mainCategory.id, statement.date)[0]
-                val weeklyLeft = statement.category.mainCategory.weeklyLimit - weeklyAmount
+                val weeklyLeft = statement.category.mainCategory.weeklyLimit + weeklyAmount
                 message = String.format(
-                    "💳지출\n[%s-%s] %s\n%s원\n%s\n%s\n%d원 남음",
+                    "💳지출\n[%s-%s] %s\n%s원\n%s\n%s\n%s원 남음",
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
                     formatter.format(statement.amount * -1),
                     statement.accountCard.name,
                     dateString,
-                    weeklyLeft
+                    formatter.format(weeklyLeft)
                 )
                 logger.info("msg: $message");
             } else {
