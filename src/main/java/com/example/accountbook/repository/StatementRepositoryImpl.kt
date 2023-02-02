@@ -60,13 +60,13 @@ class StatementRepositoryImpl(private val jpaQueryFactory: JPAQueryFactory) :
             ).fetch();
     }
 
-    override fun sumTotalAmountMonthly(categoryType: Int, date: LocalDateTime): MutableList<Int> {
+    override fun sumTotalAmountMonthly(categoryType: Int?, date: LocalDateTime): MutableList<Int> {
 
         return jpaQueryFactory.select(QStatement.statement.amount.sum().coalesce(0).`as`("sum"))
             .from(QStatement.statement)
             .join(QStatement.statement.category, QCategory.category)
             .where(
-                QCategory.category.type.eq(categoryType),
+                eqType(categoryType),
                 QStatement.statement.date.month().eq(date.monthValue)
             ).fetch();
     }

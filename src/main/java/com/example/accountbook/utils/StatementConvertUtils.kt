@@ -15,57 +15,71 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
 
     fun convertMessage(statement: Statement): String {
         val formatter = DecimalFormat("###,###")
-        val dateString = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(statement.date)
+        val dateString = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(statement.date)
 
         var message = ""
+        var monthlyTotalAmount = statementRepository.sumTotalAmountMonthly(
+            statement.category.type,
+            statement.date
+        )[0]
+        if (monthlyTotalAmount < 0) {
+            monthlyTotalAmount *= -1
+        }
+
         if (statement.category.type == Category.TYPE_INCOME) {
+
             message = String.format(
-                "💵수입\n[%s-%s] %s\n%s원\n%s\n%s",
+                "💵수입\n[%s-%s] %s\n%s원\n%s\n%s\n월 수입 %s원",
                 statement.category.mainCategory.name,
                 statement.category.name,
                 statement.name,
                 formatter.format(statement.amount),
                 statement.accountCard.name,
-                dateString
+                dateString,
+                formatter.format(monthlyTotalAmount)
             )
             logger.info("msg: $message")
         } else if (statement.category.type == Category.TYPE_EXPENSE) {
+
             if (statement.category.mainCategory.weeklyLimit > 0) {
                 val weeklyAmount =
                     statementRepository.sumAmountWeekly(statement.category.mainCategory.id, statement.date)[0]
                 val weeklyLeft = statement.category.mainCategory.weeklyLimit + weeklyAmount
                 message = String.format(
-                    "💳지출\n[%s-%s] %s\n%s원\n%s\n%s\n%s원 남음",
+                    "💳지출\n[%s-%s] %s\n%s원\n%s\n%s\n%s원 남음\n월 지출 %s원",
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
                     formatter.format(statement.amount * -1),
                     statement.accountCard.name,
                     dateString,
-                    formatter.format(weeklyLeft)
+                    formatter.format(weeklyLeft),
+                    formatter.format(monthlyTotalAmount)
                 )
                 logger.info("msg: $message");
             } else {
                 message = String.format(
-                    "\uD83D\uDCB3지출\n[%s-%s] %s\n%s원\n%s\n%s",
+                    "\uD83D\uDCB3지출\n[%s-%s] %s\n%s원\n%s\n%s\n월 지출 %s원",
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
                     formatter.format(statement.amount * -1),
                     statement.accountCard.name,
-                    dateString
+                    dateString,
+                    formatter.format(monthlyTotalAmount)
                 )
                 logger.info("msg: $message")
             }
         } else if (statement.category.type == Category.TYPE_SAVE) {
             message = String.format(
-                "💰저축\n[%s-%s] %s\n%s원\n%s\n%s",
+                "💰저축\n[%s-%s] %s\n%s원\n%s\n%s\n월 저축: %s원",
                 statement.category.mainCategory.name,
                 statement.category.name,
                 statement.name,
                 formatter.format(statement.amount * -1),
                 statement.accountCard.name,
-                dateString
+                dateString,
+                formatter.format(monthlyTotalAmount)
             )
             logger.info("msg: $message")
         }

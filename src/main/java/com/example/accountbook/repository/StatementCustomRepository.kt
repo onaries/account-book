@@ -7,7 +7,7 @@ interface StatementCustomRepository {
     fun sumAmountWeekly(mainCategoryId: Long, date: LocalDateTime): List<Int>
     fun sumAmountMonthly(mainCategoryId: Long, date: LocalDateTime): List<Int>
     fun sumAmountWeeklyGroupByCategory(date: LocalDateTime?): List<Tuple>
-    fun sumTotalAmountMonthly(categoryType: Int, date: LocalDateTime): List<Int>
+    fun sumTotalAmountMonthly(categoryType: Int?, date: LocalDateTime): List<Int>
     fun sumTotalDiscountMonthly(date: LocalDateTime): List<Int>
     fun sumTotalSavingMonthly(date: LocalDateTime): List<Int>
 
