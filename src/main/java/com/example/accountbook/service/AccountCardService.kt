@@ -17,7 +17,8 @@ import javax.transaction.Transactional
 class AccountCardService(private val accountCardRepository: AccountCardRepository) {
 
     fun getAccountCardAll(): List<AccountCard> {
-        return accountCardRepository.findAll()
+        val sort = Sort.by(Sort.Order.asc("type"), Sort.Order.asc("id"))
+        return accountCardRepository.findAll(sort)
     }
 
     fun getAccountCardList(pageable: Pageable, order: String, sort: String): Page<AccountCard> {
