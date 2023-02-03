@@ -15,6 +15,7 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
 
     fun convertMessage(statement: Statement): String {
         val formatter = DecimalFormat("###,###")
+        val formatter2 = DecimalFormat("#.##")
         val dateString = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(statement.date)
 
         var message = ""
@@ -46,11 +47,13 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
                     statementRepository.sumAmountWeekly(statement.category.mainCategory.id, statement.date)[0]
                 val weeklyLeft = statement.category.mainCategory.weeklyLimit + weeklyAmount
                 message = String.format(
-                    "💳지출\n[%s-%s] %s\n%s원\n%s\n%s\n%s원 남음\n월 지출 %s원",
+                    "💳지출\n[%s-%s] %s\n%s원 (할인 %s원 %s%%)\n%s\n%s\n%s원 남음\n월 지출 %s원",
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
                     formatter.format(statement.amount * -1),
+                    formatter.format(statement.discount),
+                    formatter2.format(statement.discount.toDouble() / statement.amount * -100),
                     statement.accountCard.name,
                     dateString,
                     formatter.format(weeklyLeft),
@@ -59,11 +62,13 @@ class StatementConvertUtils(private val statementRepository: StatementRepository
                 logger.info("msg: $message");
             } else {
                 message = String.format(
-                    "\uD83D\uDCB3지출\n[%s-%s] %s\n%s원\n%s\n%s\n월 지출 %s원",
+                    "\uD83D\uDCB3지출\n[%s-%s] %s\n%s원 (할인 %s원 %s%%)\n%s\n%s\n월 지출 %s원",
                     statement.category.mainCategory.name,
                     statement.category.name,
                     statement.name,
                     formatter.format(statement.amount * -1),
+                    formatter.format(statement.discount),
+                    formatter2.format(statement.discount.toDouble() / statement.amount * -100),
                     statement.accountCard.name,
                     dateString,
                     formatter.format(monthlyTotalAmount)
